@@ -1,0 +1,18 @@
+kind: "BuildConfig"
+apiVersion: "v1"
+metadata:
+  name: "wp-portalino-build" 
+  namespace: "portalino-dev"
+spec:
+  source: 
+    type: "Dockerfile"
+    dockerfile: "FROM wordpress:latest\nUSER admin\n"
+  strategy: 
+    type: "Docker"
+    dockerStrategy:
+    namespace: "portalino-dev"
+    forcePull: true
+  output: 
+    to:
+      kind: "DockerImage"
+      name: "172.30.149.152:5000/portalino_dev/wp_portalino:latest"

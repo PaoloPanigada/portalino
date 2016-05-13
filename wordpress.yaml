@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Pod
+metadata: 
+  name: "wordpress-portal-2"
+  labels:
+    name: "wp-svil-2"
+  namespace: "portalino-dev"
+spec:
+  containers:
+    - name: "wordpress"
+      image: wordpress:latest
+      env:
+        - name: WORDPRESS_DB_USER
+          value: admin
+        - name: WORDPRESS_DB_PASSWORD
+          value: "2iReteGas"
+        - name: WORDPRESS_DB_NAME
+          value: "2iretegas"
+        - name: WORDPRESS_DB_HOST
+          value: "mysqlportalino.portalino-dev.svc.cluster.local"
+      ports:
+        - containerPort: 80
+          name: wphttp2
+  volumes:
+    -
+      name: wpportalino-data
+      emptyDir: {  }
+    -
+      name: volume1
+      persistentVolumeClaim:
+        claimName: portalino-claim-wp

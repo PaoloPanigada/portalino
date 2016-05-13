@@ -1,0 +1,116 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="it">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<link rel="stylesheet" href="css-esempi.css" type="text/css">
+<title>Modulo di invio SMS in PHP</title>
+</head>
+
+<body>
+<strong>Modulo dello script PHP di invio SMS:</strong><br><br>
+
+<form method="POST" action="script_PHP_invio.php">
+	<table border="1" width="10%" id="table1">
+		<tr>
+		  <td>Username:</td>
+		  <td><input type="text" name="user" size="10" value=""></td>
+	  </tr>		  
+		<tr>
+		  <td>Password:</td>
+		  <td><input type="text" name="pass" size="10" value=""></td>
+	  </tr>	
+    <tr>
+			<td>Destinatario:</td>
+			<td>
+			<input type="text" name="rcpt" size="160" value="+39">
+			</td>
+		</tr>
+		<tr>
+			<td height="25">Messaggio:</td>
+			<td height="25"><input type="text" name="data" size="160"></td>
+		</tr>
+		<tr>
+			<td>Priorità:</td>
+			<td><select size="1" name="qty">
+			<option value="ll" selected>Bassa</option>
+			<option value="h" selected>Alta</option>
+			<option value="n" selected>Alta con Notifica</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td>Mittente:</td>
+			<td>
+			<input type="text" name="sender" size="160" value="+39">
+			</td>
+		</tr>
+	</table>
+	<input type="submit" value="Invia" name="invia">
+</form>
+
+<hr><strong>Codice PHP dello script di invio SMS:</strong><br><br>
+<textarea name="codice" cols="80" rows="20">
+<!-- inizio codice PHP //-->
+
+<?php
+
+$user = $_POST['user'];
+$pass = $_POST['pass'];
+$rcpt = $_POST['rcpt'];
+$data = $_POST['data'];
+$sender = $_POST['sender'];
+$qty = $_POST['qty'];
+
+/* non modificare sotto */
+
+var_dump(httpPost(array(
+'user' => $user,
+'pass' => $pass,
+'rcpt' => $rcpt,
+'data' => $data,
+'sender' => $sender,
+'qty' => $qty
+),
+'sms.pubblicitalocale.net'
+));
+
+function httpPost($fields, $host = 'sms.pubblicitalocale.net', $url = '/sms/send.php')
+{
+$qs = array();
+foreach ($fields as $k => $v)
+$qs[] = $k.'='.urlencode($v);
+$qs = join('&', $qs);
+
+$errno = $errstr = '';
+if ($fp = @fsockopen('sms.pubblicitalocale.net', 80, $errno, $errstr,
+30))
+{
+fputs($fp, "POST ".$url." HTTP/1.0\r\n");
+fputs($fp, "Host: ".$host."\r\n");
+fputs($fp, "User-Agent: PHP/".phpversion()."\r\n");
+fputs($fp,
+"Content-Type:application/x-www-form-urlencoded\r\n");
+fputs($fp, "Content-Length: ".strlen($qs)."\r\n");
+fputs($fp, "Connection: close\r\n");
+fputs($fp, "\r\n".$qs);
+
+$content = '';
+while (!feof($fp))
+$content .= fgets($fp, 1024);
+
+fclose($fp);
+
+return preg_replace("/^.*?\r\n\r\n/s", '', $content);
+}
+
+return false;
+}
+
+?>
+
+
+<!-- fine codice PHP //-->
+</textarea>
+
+</body>
+</html>
