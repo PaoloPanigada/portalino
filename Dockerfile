@@ -1,4 +1,4 @@
-FROM wordpress:latest
+FROM docker.io/wordpress:latest
 USER root
 
 MAINTAINER Panigada_Paolo
